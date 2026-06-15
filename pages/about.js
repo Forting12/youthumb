@@ -51,8 +51,8 @@ const About = () => (
     </section>
 
     <section className="max-w-content mx-auto px-4 pb-16 text-center">
-      <Link href="/coin-identifier">
-        <a className="btn-gold">Try the Coin Identifier</a>
+      <Link href="/coin-identifier" className="btn-gold">
+        Try the Coin Identifier
       </Link>
     </section>
   </>

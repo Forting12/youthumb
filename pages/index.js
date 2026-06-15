@@ -40,11 +40,11 @@ const Home = () => (
       subtitle="Your field companion for metal detecting, coin identification and treasure hunting know-how."
     >
       <div className="flex flex-wrap justify-center gap-3">
-        <Link href="/coin-identifier">
-          <a className="btn-gold">Identify a coin</a>
+        <Link href="/coin-identifier" className="btn-gold">
+          Identify a coin
         </Link>
-        <Link href="/guides">
-          <a className="btn-outline">Read the guides</a>
+        <Link href="/guides" className="btn-outline">
+          Read the guides
         </Link>
       </div>
     </Hero>
@@ -61,10 +61,11 @@ const Home = () => (
             </div>
             <h3 className="text-xl text-forest-dark mb-2">{f.title}</h3>
             <p className="mb-4 flex-grow">{f.body}</p>
-            <Link href={f.href}>
-              <a className="text-forest font-semibold hover:text-forest-dark">
-                {f.cta} →
-              </a>
+            <Link
+              href={f.href}
+              className="text-forest font-semibold hover:text-forest-dark"
+            >
+              {f.cta} →
             </Link>
           </div>
         ))}
@@ -79,10 +80,11 @@ const Home = () => (
             <p className="eyebrow">From the field</p>
             <h2 className="text-3xl text-forest-dark">Latest discoveries</h2>
           </div>
-          <Link href="/discoveries">
-            <a className="hidden sm:inline text-forest font-semibold hover:text-forest-dark">
-              View all →
-            </a>
+          <Link
+            href="/discoveries"
+            className="hidden sm:inline text-forest font-semibold hover:text-forest-dark"
+          >
+            View all →
           </Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -107,18 +109,19 @@ const Home = () => (
     <section className="max-w-content mx-auto px-4 py-16">
       <p className="eyebrow text-center">Editor's pick</p>
       <h2 className="text-3xl text-forest-dark text-center mb-8">Featured guide</h2>
-      <Link href={`/guides/${guides[0].slug}`}>
-        <a className="card grid md:grid-cols-2 overflow-hidden hover:shadow-md transition">
-          <div className="photo min-h-[220px]" />
-          <div className="p-8">
-            <p className="eyebrow">{guides[0].category}</p>
-            <h3 className="text-2xl text-forest-dark mt-2 mb-3">
-              {guides[0].title}
-            </h3>
-            <p className="mb-4">{guides[0].excerpt}</p>
-            <span className="text-forest font-semibold">Read the guide →</span>
-          </div>
-        </a>
+      <Link
+        href={`/guides/${guides[0].slug}`}
+        className="card grid md:grid-cols-2 overflow-hidden hover:shadow-md transition"
+      >
+        <div className="photo" style={{ minHeight: '220px' }} />
+        <div className="p-8">
+          <p className="eyebrow">{guides[0].category}</p>
+          <h3 className="text-2xl text-forest-dark mt-2 mb-3">
+            {guides[0].title}
+          </h3>
+          <p className="mb-4">{guides[0].excerpt}</p>
+          <span className="text-forest font-semibold">Read the guide →</span>
+        </div>
       </Link>
     </section>
   </>

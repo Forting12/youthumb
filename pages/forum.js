@@ -34,8 +34,8 @@ const Forum = () => {
         {/* Breadcrumb + search */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <p className="text-sm text-sepia-light">
-            <Link href="/">
-              <a className="hover:text-forest">Home</a>
+            <Link href="/" className="hover:text-forest">
+              Home
             </Link>{' '}
             <span className="mx-1">/</span> Forums
           </p>
@@ -75,10 +75,11 @@ const Forum = () => {
                   >
                     <div className="coin w-10 h-10 flex-shrink-0" />
                     <div className="flex-grow min-w-0">
-                      <Link href="/forum">
-                        <a className="font-semibold text-forest-dark hover:text-forest">
-                          {board.title}
-                        </a>
+                      <Link
+                        href="/forum"
+                        className="font-semibold text-forest-dark hover:text-forest"
+                      >
+                        {board.title}
                       </Link>
                       <p className="text-sm text-sepia-light truncate">
                         {board.description}

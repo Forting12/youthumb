@@ -74,8 +74,8 @@ const Reviews = () => (
         <p className="mb-4 text-sepia-light">
           Not sure where to start? Our guide walks you through it.
         </p>
-        <Link href="/guides/choosing-your-first-detector">
-          <a className="btn-primary">Read: choosing your first detector</a>
+        <Link href="/guides/choosing-your-first-detector" className="btn-primary">
+          Read: choosing your first detector
         </Link>
       </div>
     </section>

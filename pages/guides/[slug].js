@@ -59,12 +59,12 @@ const Article = ({ guide, related }) => (
       {/* Article body */}
       <article className="lg:col-span-2">
         <p className="text-sm text-sepia-light mb-6">
-          <Link href="/">
-            <a className="hover:text-forest">Home</a>
+          <Link href="/" className="hover:text-forest">
+            Home
           </Link>{' '}
           / {' '}
-          <Link href="/guides">
-            <a className="hover:text-forest">Guides</a>
+          <Link href="/guides" className="hover:text-forest">
+            Guides
           </Link>{' '}
           / <span>{guide.title}</span>
         </p>
@@ -119,13 +119,11 @@ const Article = ({ guide, related }) => (
           <ul className="space-y-4">
             {related.map((r) => (
               <li key={r.slug}>
-                <Link href={`/guides/${r.slug}`}>
-                  <a className="flex gap-3 group">
-                    <div className="photo w-16 h-16 rounded flex-shrink-0" />
-                    <p className="text-sm font-semibold text-sepia-dark leading-snug group-hover:text-forest">
-                      {r.title}
-                    </p>
-                  </a>
+                <Link href={`/guides/${r.slug}`} className="flex gap-3 group">
+                  <div className="photo w-16 h-16 rounded flex-shrink-0" />
+                  <p className="text-sm font-semibold text-sepia-dark leading-snug group-hover:text-forest">
+                    {r.title}
+                  </p>
                 </Link>
               </li>
             ))}
@@ -137,8 +135,8 @@ const Article = ({ guide, related }) => (
           <p className="text-sm opacity-90 mb-4">
             Snap a photo of a coin and get an instant ID and rough value.
           </p>
-          <Link href="/coin-identifier">
-            <a className="btn-gold w-full text-sm">Open Coin Identifier</a>
+          <Link href="/coin-identifier" className="btn-gold w-full text-sm">
+            Open Coin Identifier
           </Link>
         </div>
       </aside>

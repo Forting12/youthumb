@@ -15,32 +15,30 @@ const Header = () => {
     <header className="bg-forest-dark sticky top-0 z-50 shadow-md">
       <div className="max-w-content mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link href="/">
-            <a className="flex items-center" aria-label="RelicQuest home">
-              <Logo light />
-            </a>
+          <Link href="/" className="flex items-center" aria-label="RelicQuest home">
+            <Logo light />
           </Link>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
-                <a
-                  className={`nav-link ${
-                    isActive(item.href)
-                      ? 'opacity-100 border-b-2 border-gold pb-0.5'
-                      : ''
-                  }`}
-                >
-                  {item.label}
-                </a>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`nav-link ${
+                  isActive(item.href)
+                    ? 'opacity-100 border-b-2 border-gold pb-0.5'
+                    : ''
+                }`}
+              >
+                {item.label}
               </Link>
             ))}
           </nav>
 
           <div className="hidden md:flex items-center space-x-3">
-            <Link href="/coin-identifier">
-              <a className="btn-gold text-sm py-2 px-4">Join free</a>
+            <Link href="/coin-identifier" className="btn-gold text-sm py-2 px-4">
+              Join free
             </Link>
           </div>
 
@@ -65,21 +63,23 @@ const Header = () => {
       {open && (
         <nav className="md:hidden bg-forest-darker px-4 pb-4 space-y-1">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <a
-                className={`block py-2 nav-link ${
-                  isActive(item.href) ? 'opacity-100 text-gold-light' : ''
-                }`}
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
-              </a>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`block py-2 nav-link ${
+                isActive(item.href) ? 'opacity-100 text-gold-light' : ''
+              }`}
+              onClick={() => setOpen(false)}
+            >
+              {item.label}
             </Link>
           ))}
-          <Link href="/coin-identifier">
-            <a className="btn-gold w-full mt-2" onClick={() => setOpen(false)}>
-              Join free
-            </a>
+          <Link
+            href="/coin-identifier"
+            className="btn-gold w-full mt-2"
+            onClick={() => setOpen(false)}
+          >
+            Join free
           </Link>
         </nav>
       )}
