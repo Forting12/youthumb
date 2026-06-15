@@ -1,5 +1,5 @@
 {
-  "name": "youtube-thumbnail-downloader",
+  "name": "relicquest",
   "version": "1.0.0",
   "scripts": {
     "dev": "next",

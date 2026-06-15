@@ -1,22 +1,30 @@
 import "../styles/index.css";
 import { Fragment } from "react";
 import { DefaultSeo } from "next-seo";
+import Layout from "../components/Layout";
+
+const SITE_URL = "https://relicquest.example.com";
 
 function MyApp({ Component, pageProps }) {
   return (
     <Fragment>
       <DefaultSeo
-        title="Youtube Thumbnail Downloader"
-        description="Download high-quality thumbnails from YouTube videos."
-        canonical="https://your-website-url.com"
+        titleTemplate="%s · RelicQuest"
+        defaultTitle="RelicQuest — Treasure Hunting, Metal Detecting & Coin ID"
+        description="Identify coins from a photo, browse field guides and detector reviews, and trade tips in the treasure hunting community."
+        canonical={SITE_URL}
         openGraph={{
-          url: "https://your-website-url.com",
-          title: "Youtube Thumbnail Downloader",
-          description: "Download high-quality thumbnails from YouTube videos.",
-          site_name: "Youtube Thumbnail Downloader",
+          type: "website",
+          url: SITE_URL,
+          title: "RelicQuest — Treasure Hunting, Metal Detecting & Coin ID",
+          description:
+            "Identify coins from a photo, browse field guides and detector reviews, and trade tips in the treasure hunting community.",
+          site_name: "RelicQuest",
         }}
       />
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </Fragment>
   );
 }
