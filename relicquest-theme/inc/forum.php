@@ -144,7 +144,7 @@ function relicquest_new_topic_form( $board_id ) {
 			<?php elseif ( 'failed' === $error ) : ?>
 				<p class="forum-notice error"><?php esc_html_e( 'Something went wrong. Please try again.', 'relicquest' ); ?></p>
 			<?php endif; ?>
-			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="forum-form">
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="forum-form" enctype="multipart/form-data">
 				<input type="hidden" name="action" value="relicquest_new_topic" />
 				<input type="hidden" name="board_id" value="<?php echo esc_attr( $board_id ); ?>" />
 				<?php wp_nonce_field( 'relicquest_new_topic_' . $board_id, 'relicquest_topic_nonce' ); ?>
@@ -155,6 +155,10 @@ function relicquest_new_topic_form( $board_id ) {
 				<p>
 					<label for="rq-topic-body"><?php esc_html_e( 'Message', 'relicquest' ); ?></label>
 					<textarea id="rq-topic-body" name="topic_body" rows="5" required></textarea>
+				</p>
+				<p class="forum-file">
+					<label for="rq-topic-image"><?php esc_html_e( 'Add a photo (optional)', 'relicquest' ); ?></label>
+					<input type="file" id="rq-topic-image" name="topic_image" accept="image/jpeg,image/png,image/gif,image/webp" />
 				</p>
 				<button type="submit" class="btn btn-primary btn-sm"><?php esc_html_e( 'Post topic', 'relicquest' ); ?></button>
 			</form>
@@ -209,10 +213,89 @@ function relicquest_handle_new_topic() {
 
 	update_post_meta( $topic_id, '_rq_board', $board_id );
 
+	// Optional photo: attach it and use it as the topic's featured image.
+	$attachment_id = relicquest_handle_image_upload( 'topic_image', $topic_id );
+	if ( $attachment_id ) {
+		set_post_thumbnail( $topic_id, $attachment_id );
+	}
+
 	wp_safe_redirect( get_permalink( $topic_id ) );
 	exit;
 }
 add_action( 'admin_post_relicquest_new_topic', 'relicquest_handle_new_topic' );
+
+/**
+ * Handle a single front-end image upload, restricted to image types.
+ *
+ * @param string $field    Name of the $_FILES field.
+ * @param int    $post_id  Post to attach the media to.
+ * @return int Attachment ID, or 0 on failure / no file.
+ */
+function relicquest_handle_image_upload( $field, $post_id = 0 ) {
+	if ( ! is_user_logged_in() ) {
+		return 0;
+	}
+	if ( empty( $_FILES[ $field ] ) || empty( $_FILES[ $field ]['name'] ) || ! empty( $_FILES[ $field ]['error'] ) ) {
+		return 0;
+	}
+
+	// Images only.
+	$check   = wp_check_filetype( sanitize_file_name( $_FILES[ $field ]['name'] ) );
+	$allowed = array( 'jpg', 'jpeg', 'png', 'gif', 'webp' );
+	if ( empty( $check['ext'] ) || ! in_array( strtolower( $check['ext'] ), $allowed, true ) ) {
+		return 0;
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+
+	$attachment_id = media_handle_upload( $field, $post_id, array(), array( 'test_form' => false ) );
+
+	return is_wp_error( $attachment_id ) ? 0 : (int) $attachment_id;
+}
+
+/**
+ * Save an image attached to a reply (comment) as comment meta.
+ *
+ * @param int $comment_id New comment ID.
+ */
+function relicquest_save_comment_image( $comment_id ) {
+	if ( empty( $_FILES['comment_image'] ) || empty( $_FILES['comment_image']['name'] ) ) {
+		return;
+	}
+	$comment = get_comment( $comment_id );
+	if ( ! $comment || 'topic' !== get_post_type( $comment->comment_post_ID ) ) {
+		return;
+	}
+	$attachment_id = relicquest_handle_image_upload( 'comment_image', $comment->comment_post_ID );
+	if ( $attachment_id ) {
+		add_comment_meta( $comment_id, '_rq_image', $attachment_id, true );
+	}
+}
+add_action( 'comment_post', 'relicquest_save_comment_image' );
+
+/**
+ * Append a reply's attached image to its rendered text.
+ *
+ * @param string          $text    Comment text.
+ * @param WP_Comment|null $comment Comment object.
+ * @return string
+ */
+function relicquest_append_comment_image( $text, $comment = null ) {
+	if ( ! $comment ) {
+		return $text;
+	}
+	$attachment_id = (int) get_comment_meta( $comment->comment_ID, '_rq_image', true );
+	if ( $attachment_id ) {
+		$img = wp_get_attachment_image( $attachment_id, 'relicquest-card', false, array( 'class' => 'comment-image', 'loading' => 'lazy' ) );
+		if ( $img ) {
+			$text .= '<a class="comment-image-wrap" href="' . esc_url( wp_get_attachment_url( $attachment_id ) ) . '" target="_blank" rel="noopener">' . $img . '</a>';
+		}
+	}
+	return $text;
+}
+add_filter( 'comment_text', 'relicquest_append_comment_image', 10, 2 );
 
 /**
  * Force comments open on topics so members can always reply.

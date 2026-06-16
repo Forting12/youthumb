@@ -77,6 +77,9 @@ or external API required:
   *Start a new topic* form.
 - Logged-in members create topics (the `topic` custom post type) and **reply**
   using native WordPress comments (`single-topic.php` + `comments.php`).
+- Members can **attach a photo** to a topic or reply (JPEG/PNG/GIF/WebP); the
+  image is added to the Media Library and shown inline. Uploads are restricted
+  to logged-in users and to image types only.
 - Topic/post counts and the "last post" line on the forum index update
   automatically as members post.
 - Guests see a *Sign in to post* prompt; posting is restricted to logged-in

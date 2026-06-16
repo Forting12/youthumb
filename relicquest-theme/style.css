@@ -352,6 +352,23 @@ a.card:hover { box-shadow: 0 6px 16px rgba(0,0,0,.1); }
 .comment-reply-title { margin-bottom: 1rem; }
 .container-narrow { max-width: 52rem; }
 
+/* Image uploads + attachments */
+.forum-file input[type="file"] {
+  display: block; width: 100%;
+  padding: .5rem; margin-bottom: 1rem;
+  border: 1px dashed var(--parchment-dark);
+  border-radius: 6px;
+  background: var(--parchment-light);
+  font-family: var(--sans); font-size: .875rem;
+}
+.forum-attachment, .comment-image-wrap { display: block; margin-top: 1rem; }
+.forum-attachment img, .comment-image {
+  max-width: 100%; height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--parchment-dark);
+}
+.comment-image-wrap { max-width: 360px; }
+
 /* ===================================================================
    Coin identifier
 =================================================================== */

@@ -46,6 +46,11 @@ while ( have_posts() ) :
 						<span class="forum-badge"><?php esc_html_e( 'Original post', 'relicquest' ); ?></span>
 					</div>
 					<div class="entry-content"><?php the_content(); ?></div>
+					<?php if ( has_post_thumbnail() ) : ?>
+						<a class="forum-attachment" href="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'full' ) ); ?>" target="_blank" rel="noopener">
+							<?php the_post_thumbnail( 'relicquest-card', array( 'loading' => 'lazy' ) ); ?>
+						</a>
+					<?php endif; ?>
 				</div>
 			</article>
 
