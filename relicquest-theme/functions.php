@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RELICQUEST_VERSION', '1.0.0' );
+define( 'RELICQUEST_VERSION', '1.1.0' );
 
 /**
  * Theme setup.
@@ -82,4 +82,5 @@ require get_template_directory() . '/inc/post-types.php';
 require get_template_directory() . '/inc/meta-boxes.php';
 require get_template_directory() . '/inc/demo-content.php';
 require get_template_directory() . '/inc/template-helpers.php';
+require get_template_directory() . '/inc/forum.php';
 require get_template_directory() . '/inc/setup.php';

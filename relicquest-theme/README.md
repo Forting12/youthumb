@@ -2,8 +2,9 @@
 
 A classic (PHP) WordPress theme for treasure-hunting / metal-detecting sites.
 It reproduces the RelicQuest design with a home page, field guides, discoveries
-gallery, detector reviews, an interactive **Coin Identifier**, and a forum
-listing.
+gallery, detector reviews, an interactive **Coin Identifier**, and a fully
+interactive **community forum** (members post topics and replies — no plugin
+required).
 
 The theme ships with **demo content** that renders automatically before you add
 your own posts — so it looks complete the moment you activate it.
@@ -66,11 +67,28 @@ real coin recognition, replace the `setTimeout` block in
 `assets/js/main.js → setupCoinIdentifier()` with a `fetch()` call that POSTs the
 selected image to your model/API and renders the returned matches.
 
-## A real forum
+## The forum (interactive, no plugin needed)
 
-The Forum page is a styled board **listing**. For full discussion threads,
-install [bbPress](https://wordpress.org/plugins/bbpress/) and link the menu item
-to its forum index; the board cards here work well as a landing page above it.
+The theme ships a **fully interactive forum** built into the theme — no plugin
+or external API required:
+
+- On activation it seeds real, clickable **boards** (grouped into sections).
+- Clicking a board opens it (`single-board.php`), listing its **topics** and a
+  *Start a new topic* form.
+- Logged-in members create topics (the `topic` custom post type) and **reply**
+  using native WordPress comments (`single-topic.php` + `comments.php`).
+- Topic/post counts and the "last post" line on the forum index update
+  automatically as members post.
+- Guests see a *Sign in to post* prompt; posting is restricted to logged-in
+  users and protected with nonces.
+
+To let visitors register, enable **Settings → General → Anyone can register**
+and set a default role (e.g. *Subscriber*). Add your own boards anytime under
+**Forum Boards → Add New** and assign a **Board Section**.
+
+> Prefer a dedicated forum plugin instead? You can still install
+> [bbPress](https://wordpress.org/plugins/bbpress/) and point the menu at it —
+> the built-in forum and bbPress can coexist.
 
 ## File overview
 
@@ -82,17 +100,21 @@ relicquest-theme/
 ├── front-page.php                Home (hero, features, discoveries, featured guide)
 ├── archive.php                   Guides / Discoveries / Reviews listings
 ├── single.php                    Article with banner + sidebar
+├── single-board.php              Forum board: topic list + new-topic form
+├── single-topic.php              Forum topic: opening post + replies
+├── comments.php                  Replies / comments (topics + articles)
 ├── page.php / index.php          Generic page / fallback
 ├── sidebar.php                   Latest Discoveries · Related · Coin ID CTA
 ├── page-templates/
 │   ├── template-coin-identifier.php
-│   └── template-forum.php
+│   └── template-forum.php        Forum index (board sections, live counts)
 ├── inc/
-│   ├── post-types.php            CPTs + board_section taxonomy
+│   ├── post-types.php            CPTs (guide/discovery/review/board/topic) + taxonomy
 │   ├── meta-boxes.php            Rating / meta-line / board stat fields
 │   ├── demo-content.php          Fallback demo data
 │   ├── template-helpers.php      hero(), photo(), stars(), share, menus
-│   └── setup.php                 Auto-create pages on activation
+│   ├── forum.php                 Interactive forum: topics, replies, counts
+│   └── setup.php                 Auto-create pages + seed boards on activation
 └── assets/js/main.js             Nav toggle, coin identifier, forum search
 ```
 

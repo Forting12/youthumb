@@ -86,6 +86,24 @@ function relicquest_register_post_types() {
 		)
 	);
 
+	register_post_type(
+		'topic',
+		array(
+			'labels'       => array(
+				'name'          => __( 'Forum Topics', 'relicquest' ),
+				'singular_name' => __( 'Topic', 'relicquest' ),
+				'add_new_item'  => __( 'Add New Topic', 'relicquest' ),
+				'edit_item'     => __( 'Edit Topic', 'relicquest' ),
+			),
+			'public'       => true,
+			'has_archive'  => false,
+			'menu_icon'    => 'dashicons-format-chat',
+			'rewrite'      => array( 'slug' => 'topic' ),
+			'supports'     => array( 'title', 'editor', 'author', 'comments' ),
+			'show_in_rest' => true,
+		)
+	);
+
 	register_taxonomy(
 		'board_section',
 		'board',

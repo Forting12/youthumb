@@ -164,6 +164,7 @@ function relicquest_default_links() {
 		__( 'Guides', 'relicquest' )          => get_post_type_archive_link( 'guide' ) ?: home_url( '/guides/' ),
 		__( 'Reviews', 'relicquest' )         => get_post_type_archive_link( 'review' ) ?: home_url( '/reviews/' ),
 		__( 'Coin Identifier', 'relicquest' ) => home_url( '/coin-identifier/' ),
+		__( 'Forum', 'relicquest' )           => home_url( '/forum/' ),
 		__( 'About', 'relicquest' )           => home_url( '/about/' ),
 	);
 }

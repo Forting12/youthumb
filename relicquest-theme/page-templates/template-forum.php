@@ -41,13 +41,18 @@ function relicquest_forum_sections() {
 		);
 		$boards = array();
 		foreach ( $query->posts as $post ) {
+			$last = relicquest_board_last_post( $post->ID );
+			// Live topic/post counts, falling back to the seeded meta values.
+			$topics = relicquest_board_topic_count( $post->ID );
+			$posts  = relicquest_board_post_count( $post->ID );
 			$boards[] = array(
 				'title'     => get_the_title( $post ),
 				'desc'      => get_the_excerpt( $post ),
-				'topics'    => (int) get_post_meta( $post->ID, '_rq_topics', true ),
-				'posts'     => (int) get_post_meta( $post->ID, '_rq_posts', true ),
-				'last'      => get_post_meta( $post->ID, '_rq_last_post', true ),
-				'last_meta' => get_post_meta( $post->ID, '_rq_last_meta', true ),
+				'url'       => get_permalink( $post ),
+				'topics'    => $topics ? $topics : (int) get_post_meta( $post->ID, '_rq_topics', true ),
+				'posts'     => $posts ? $posts : (int) get_post_meta( $post->ID, '_rq_posts', true ),
+				'last'      => $last['title'] ? $last['title'] : get_post_meta( $post->ID, '_rq_last_post', true ),
+				'last_meta' => $last['meta'] ? $last['meta'] : get_post_meta( $post->ID, '_rq_last_meta', true ),
 			);
 		}
 		wp_reset_postdata();
@@ -67,6 +72,19 @@ relicquest_hero(
 		'small'    => true,
 	)
 );
+
+$relicquest_sections = relicquest_forum_sections();
+
+// First board with a real URL, used by the "New topic" button.
+$relicquest_first_board = '';
+foreach ( $relicquest_sections as $relicquest_section ) {
+	foreach ( $relicquest_section['boards'] as $relicquest_b ) {
+		if ( ! empty( $relicquest_b['url'] ) ) {
+			$relicquest_first_board = $relicquest_b['url'];
+			break 2;
+		}
+	}
+}
 ?>
 
 <section class="section">
@@ -77,12 +95,16 @@ relicquest_hero(
 			</p>
 			<div class="forum-toolbar">
 				<input type="search" id="forum-search" placeholder="<?php esc_attr_e( 'Search forums…', 'relicquest' ); ?>" />
-				<button type="button" class="btn btn-primary btn-sm"><?php esc_html_e( 'New post', 'relicquest' ); ?></button>
+					<?php if ( is_user_logged_in() && $relicquest_first_board ) : ?>
+						<a class="btn btn-primary btn-sm" href="<?php echo esc_url( $relicquest_first_board ); ?>#new-topic"><?php esc_html_e( 'New topic', 'relicquest' ); ?></a>
+					<?php elseif ( ! is_user_logged_in() ) : ?>
+						<a class="btn btn-primary btn-sm" href="<?php echo esc_url( wp_login_url( home_url( '/forum/' ) ) ); ?>"><?php esc_html_e( 'Sign in to post', 'relicquest' ); ?></a>
+					<?php endif; ?>
 			</div>
 		</div>
 
 		<div id="forum-sections">
-			<?php foreach ( relicquest_forum_sections() as $section ) : ?>
+			<?php foreach ( $relicquest_sections as $section ) : ?>
 				<div class="card board-section">
 					<div class="section-head">
 						<h2><?php echo esc_html( $section['section'] ); ?></h2>
@@ -93,7 +115,7 @@ relicquest_hero(
 							<li class="forum-board" data-name="<?php echo esc_attr( strtolower( $board['title'] . ' ' . $board['desc'] ) ); ?>">
 								<div class="coin" style="width:2.5rem;height:2.5rem;"></div>
 								<div class="board-info">
-									<a class="board-title" href="<?php echo esc_url( home_url( '/forum/' ) ); ?>"><?php echo esc_html( $board['title'] ); ?></a>
+									<a class="board-title" href="<?php echo esc_url( isset( $board['url'] ) ? $board['url'] : home_url( '/forum/' ) ); ?>"><?php echo esc_html( $board['title'] ); ?></a>
 									<p><?php echo esc_html( $board['desc'] ); ?></p>
 								</div>
 								<div class="board-stats">

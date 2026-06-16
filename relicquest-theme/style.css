@@ -2,8 +2,8 @@
 Theme Name: RelicQuest
 Theme URI: https://relicquest.example.com
 Author: RelicQuest
-Description: A treasure-hunting, metal-detecting and coin-identification theme. Includes custom post types for Guides, Discoveries, Reviews and Forum boards, a Coin Identifier page template, and demo content that appears before you add your own.
-Version: 1.0.0
+Description: A treasure-hunting, metal-detecting and coin-identification theme. Includes custom post types for Guides, Discoveries, Reviews and Forum boards, an interactive community forum (member topics & replies, no plugin needed), a Coin Identifier page template, and demo content that appears before you add your own.
+Version: 1.1.0
 Requires at least: 5.9
 Tested up to: 6.5
 Requires PHP: 7.4
@@ -276,6 +276,81 @@ a.card:hover { box-shadow: 0 6px 16px rgba(0,0,0,.1); }
   background: var(--parchment-light);
   font-family: var(--sans);
 }
+
+/* Topic list (inside a board) */
+.topic-list { list-style: none; margin: 0; padding: 0; }
+.topic-list li {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--parchment-dark);
+}
+.topic-list li:hover { background: rgba(231,220,199,.4); }
+.topic-info { flex-grow: 1; min-width: 0; }
+.topic-info .topic-title { font-weight: 600; color: var(--forest-dark); }
+.topic-info .topic-meta { margin: .15rem 0 0; font-size: .8rem; color: var(--sepia-light); }
+.topic-stats { width: 6rem; text-align: center; font-size: .875rem; }
+.topic-stats strong { display: block; color: var(--sepia-dark); }
+.topic-stats span { font-size: .72rem; color: var(--sepia-light); }
+
+/* New-topic form + sign-in prompt */
+.new-topic, .forum-signin { margin-top: 1.5rem; }
+.new-topic h3 { margin-bottom: 1rem; }
+.forum-form label { display: block; font-weight: 600; color: var(--sepia-dark); margin-bottom: .3rem; font-size: .9rem; }
+.forum-form input[type="text"],
+.forum-form textarea,
+.comment-respond input[type="text"],
+.comment-respond input[type="email"],
+.comment-respond input[type="url"],
+.comment-respond textarea {
+  width: 100%;
+  padding: .6rem .9rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--parchment-dark);
+  border-radius: 6px;
+  background: var(--parchment-light);
+  font-family: var(--sans);
+  font-size: 1rem;
+}
+.forum-form textarea, .comment-respond textarea { resize: vertical; }
+.forum-notice { padding: .6rem .9rem; border-radius: 6px; font-size: .875rem; margin-bottom: 1rem; }
+.forum-notice.error { background: #f6e2dc; color: #8a3b2a; }
+
+/* Forum posts (topic + replies) */
+.forum-post { margin-bottom: 1.25rem; }
+.forum-post-head { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+.forum-post-head .avatar {
+  width: 2.5rem; height: 2.5rem; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--forest); color: var(--parchment-light);
+  font-family: var(--serif); font-weight: 700;
+}
+.forum-author { display: block; color: var(--sepia-dark); }
+.forum-date { font-size: .78rem; color: var(--sepia-light); }
+.forum-badge {
+  margin-left: auto; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em;
+  padding: .2rem .55rem; border-radius: 999px;
+  background: var(--gold); color: var(--sepia-dark);
+}
+
+/* Comments / replies */
+.comments-area { margin-top: 2rem; }
+.comments-title { font-size: 1.35rem; margin-bottom: 1.25rem; }
+.comment-list { list-style: none; margin: 0 0 2rem; padding: 0; }
+.comment-list ol { list-style: none; margin-left: 1.5rem; }
+.comment-list .comment-body {
+  background: #fff;
+  border: 1px solid var(--parchment-dark);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+.comment-list .comment-author { font-weight: 600; color: var(--sepia-dark); }
+.comment-list .comment-author img { border-radius: 50%; vertical-align: middle; margin-right: .5rem; }
+.comment-list .comment-meta a { font-size: .78rem; color: var(--sepia-light); }
+.comment-respond { padding: 1.5rem; margin-top: 1.5rem; }
+.comment-reply-title { margin-bottom: 1rem; }
+.container-narrow { max-width: 52rem; }
 
 /* ===================================================================
    Coin identifier

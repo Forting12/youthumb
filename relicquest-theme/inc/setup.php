@@ -64,3 +64,43 @@ function relicquest_create_pages() {
 	);
 }
 add_action( 'after_switch_theme', 'relicquest_create_pages' );
+
+/**
+ * Seed real, clickable forum boards on activation so the forum is interactive
+ * out of the box. Mirrors the demo board structure, but as actual posts that
+ * members can open and start topics in. Runs only when no boards exist yet.
+ */
+function relicquest_create_forum_boards() {
+	if ( relicquest_has_posts( 'board' ) ) {
+		return;
+	}
+
+	// Make sure the CPT and taxonomy exist before we insert.
+	relicquest_register_post_types();
+
+	foreach ( relicquest_demo_boards() as $section ) {
+		$term = term_exists( $section['section'], 'board_section' );
+		if ( ! $term ) {
+			$term = wp_insert_term( $section['section'], 'board_section' );
+		}
+		$term_id = is_array( $term ) ? (int) $term['term_id'] : 0;
+
+		foreach ( $section['boards'] as $board ) {
+			$board_id = wp_insert_post(
+				array(
+					'post_type'    => 'board',
+					'post_status'  => 'publish',
+					'post_title'   => $board['title'],
+					'post_excerpt' => $board['desc'],
+				)
+			);
+
+			if ( $board_id && ! is_wp_error( $board_id ) && $term_id ) {
+				wp_set_object_terms( $board_id, $term_id, 'board_section' );
+			}
+		}
+	}
+
+	flush_rewrite_rules();
+}
+add_action( 'after_switch_theme', 'relicquest_create_forum_boards' );
