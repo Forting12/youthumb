@@ -1,83 +1,114 @@
 import { useState } from "react";
-import copy from "copy-to-clipboard";
+import { CompetitorPanel, UserVideoPanel } from "../components/Panels";
+import Results from "../components/Results";
 
-const Index = () => {
-  const [videoURL, setVideoURL] = useState("");
-  const [thumbnailOptions, setThumbnailOptions] = useState([]);
-
-  const getYouTubeThumbnail = (url) => {
-    let regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
-    let match = url.match(regExp);
-
-    if (match && match[1].length === 11) {
-      const videoURL = match[1];
-      const thumbnailBaseUrl = "http://img.youtube.com/vi/";
-
-      const options = [
-        { resolution: "HD (1280x720)", code: "maxresdefault" },
-        { resolution: "SD (640x480)", code: "sddefault" },
-        { resolution: "Normal (480x360)", code: "hqdefault" },
-        { resolution: "Medium (320x180)", code: "mqdefault" },
-        { resolution: "Low (120x90)", code: "default" },
-      ];
-
-      const thumbnailOptions = options.map((option) => ({
-        resolution: option.resolution,
-        url: `${thumbnailBaseUrl}${videoURL}/${option.code}.jpg`,
-      }));
-
-      setThumbnailOptions(thumbnailOptions);
-      setVideoURL("");
-    } else {
-      setThumbnailOptions([]);
-    }
-  };
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">
-          Youtube Thumbnail Downloader
-        </h1>
-        <p className="text-gray-600">
-          Download high-quality thumbnails from YouTube videos.
-        </p>
-      </header>
-      <div className="text-center">
-        <input
-          type="text"
-          className="w-full md:w-1/2 px-4 py-2 border rounded"
-          placeholder="Enter YouTube URL"
-          value={videoURL}
-          onChange={(e) => setVideoURL(e.target.value)}
-        />
-        <button
-          className="btn-blue mt-2"
-          onClick={() => getYouTubeThumbnail(videoURL)}
-        >
-          Download Thumbnails
-        </button>
-      </div>
-      {thumbnailOptions.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Thumbnail Options</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {thumbnailOptions.map((option, index) => (
-              <div key={index} className="thumbnail-option">
-                <img src={option.url} alt={`Thumbnail ${index + 1}`} />
-                <button
-                  className="btn-blue mt-2"
-                  onClick={() => copy(option.url)}
-                >
-                  Copy Image URL
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+const EMPTY_COMPETITOR = {
+  title: "",
+  description: "",
+  hashtags: "",
+  thumbnailDescription: "",
+  timestamps: "",
+  transcript: "",
 };
 
-export default Index;
+const EMPTY_USER = {
+  title: "",
+  description: "",
+  language: "English",
+  country: "",
+  audience: "",
+  tone: "mystery",
+  realism: 60,
+  clickbait: 50,
+  timestamps: "",
+  transcript: "",
+};
+
+export default function Home() {
+  const [competitor, setCompetitor] = useState(EMPTY_COMPETITOR);
+  const [user, setUser] = useState(EMPTY_USER);
+  const [compThumb, setCompThumb] = useState([]); // [{...image}]
+  const [frames, setFrames] = useState([]); // [{...image}]
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [response, setResponse] = useState(null); // { result, mode, warning, model }
+
+  const canRun = competitor.title.trim() || competitor.description.trim() || compThumb.length;
+
+  async function run() {
+    setLoading(true);
+    setError("");
+    setResponse(null);
+    try {
+      const payload = {
+        competitor,
+        user,
+        competitorThumbnail: compThumb[0] && compThumb[0].data ? compThumb[0] : null,
+        userImages: frames.map((f) => ({ label: f.label, mediaType: f.mediaType, data: f.data })),
+      };
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`Request failed (${res.status})`);
+      const json = await res.json();
+      setResponse(json);
+      // smooth scroll to results
+      setTimeout(() => document.getElementById("hc-results-anchor")?.scrollIntoView({ behavior: "smooth" }), 50);
+    } catch (e) {
+      setError(e.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function reset() {
+    setResponse(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  return (
+    <div className="hc-app">
+      <header className="hc-header">
+        <div className="hc-logo">⛏️ HunterCTR <span>AI</span></div>
+        <p className="hc-tagline">
+          Reverse-engineer a competitor. Rebuild the winning hook with <em>your</em> footage.
+          Publish-ready titles, descriptions, tags &amp; thumbnail concepts for treasure / mystery / discovery videos.
+        </p>
+      </header>
+
+      <main className="hc-main">
+        <div className="hc-panels">
+          <CompetitorPanel value={competitor} onChange={setCompetitor} thumb={compThumb} setThumb={setCompThumb} />
+          <UserVideoPanel value={user} onChange={setUser} frames={frames} setFrames={setFrames} />
+        </div>
+
+        <div className="hc-runbar">
+          <button className="hc-btn-primary" onClick={run} disabled={loading || !canRun}>
+            {loading ? "Analyzing competitor & generating…" : "Reverse-engineer & generate package →"}
+          </button>
+          {!canRun && <span className="hc-hint">Add at least a competitor title, description, or thumbnail to begin.</span>}
+          {error && <span className="hc-error">{error}</span>}
+        </div>
+
+        <div id="hc-results-anchor" />
+        {response && (
+          <Results
+            data={response.result}
+            mode={response.mode}
+            warning={response.warning}
+            model={response.model}
+            frames={frames}
+            onReset={reset}
+          />
+        )}
+      </main>
+
+      <footer className="hc-footer">
+        HunterCTR AI · competitor-inspired, never cloned · built for long-form treasure &amp; mystery content
+      </footer>
+    </div>
+  );
+}
